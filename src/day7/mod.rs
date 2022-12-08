@@ -1,5 +1,3 @@
-use regex::Regex;
-
 pub fn main() {
     println!("Day7");
 }
