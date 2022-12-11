@@ -51,7 +51,7 @@ fn problem1(s: &str) -> i32 {
     let mut sum_of_snapshots = 0;
 
     let mut current_cycle: i32 = 1;
-    let mut execute_at_cycle: i32 = 0;
+    let mut execute_at_cycle: i32;
 
     for instruction in instructions {
         execute_at_cycle = instruction.cycles() + current_cycle;
