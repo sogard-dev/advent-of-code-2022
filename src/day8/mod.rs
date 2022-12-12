@@ -1,3 +1,9 @@
+use std::{
+    collections::{HashMap, HashSet},
+};
+
+use crate::grid::{Coordinate, Grid, self};
+
 pub fn main() {
     println!("Day8");
 }
@@ -7,79 +13,39 @@ fn parse(s: &str) -> Vec<Vec<u32>> {
 }
 
 fn problem1(s: &str) -> usize {
-    let forest = parse(s);
-    let columns = forest.len();
-    let rows = forest[0].len();
+    let grid = Grid::new(s, |_, c| c.to_digit(10).unwrap());
 
-    //Forest: row,column
+    let a: Vec<Coordinate> = (1..=grid.height).map(|i| (1 * i, 0)).collect();
+    let b = (1..=grid.height).map(|i| (-1 * i, 0)).collect();
+    let c = (1..=grid.width).map(|i| (0, 1 * i)).collect();
+    let d = (1..=grid.width).map(|i| (0, -1 * i)).collect();
+
+    let deltas = [a, b, c, d].concat();
+
+    let mut blocked = HashMap::new();
+
+    grid.for_every_delta(
+        |me, them| {
+            let my_height = grid.get_model(&me).unwrap();
+            let their_height = grid.get_model(&them).unwrap();
+
+            if my_height <= their_height {
+                let dir = grid::get_direction(&me, &them);
+                blocked.entry(me).or_insert_with(|| HashSet::new()).insert(dir);
+            }
+        },
+        deltas,
+    );
 
     let mut visible_trees = 0;
-
-    for row in 0..rows {
-        for column in 0..columns {
-            let mut visible = false;
-
-            if row == 0 || row == rows - 1 || column == 0 || column == columns - 1 {
-                visible = true;
-            } else {
-                let my_height = forest[row][column];
-
-                let mut is_blocked = 0;
-                for r in 0..row {
-                    if forest[r][column] >= my_height {
-                        // println!(
-                        //     "({},{}) {} blocked by ({},{}) {}",
-                        //     row, column, my_height, r, column, forest[r][column]
-                        // );
-                        is_blocked += 1;
-                        break;
-                    }
-                }
-
-                for r in row + 1..rows {
-                    if forest[r][column] >= my_height {
-                        // println!(
-                        //     "({},{}) {} blocked by ({},{}) {}",
-                        //     row, column, my_height, r, column, forest[r][column]
-                        // );
-                        is_blocked += 1;
-                        break;
-                    }
-                }
-
-                for c in 0..column {
-                    if forest[row][c] >= my_height {
-                        // println!(
-                        //     "({},{}) {} blocked by ({},{}) {}",
-                        //     row, column, my_height, row, c, forest[row][c]
-                        // );
-                        is_blocked += 1;
-                        break;
-                    }
-                }
-
-                for c in column + 1..columns {
-                    if forest[row][c] >= my_height {
-                        // println!(
-                        //     "({},{}) {} blocked by ({},{}) {}",
-                        //     row, column, my_height, row, c, forest[row][c]
-                        // );
-                        is_blocked += 1;
-                        break;
-                    }
-                }
-
-                if is_blocked != 4 {
-                    // println!("({},{}) {} is visible", row, column, my_height);
-                    visible = true;
-                }
-            }
-
-            if visible {
-                visible_trees += 1;
-            }
-        }
-    }
+    grid.for_every(|pos| {
+        match blocked.get(&pos) {
+            Some(set) => if set.len() != 4 {
+                visible_trees += 1
+            },
+            None => visible_trees += 1,
+        } 
+    });
 
     visible_trees
 }
@@ -127,7 +93,7 @@ fn problem2(s: &str) -> usize {
                 }
             }
 
-            println!("({},{}) {} => {},{},{},{}", row, column, my_height, up, left, right, down);
+            //println!("({},{}) {} => {},{},{},{}", row, column, my_height, up, left, right, down);
 
             let score = up * down * left * right;
             if score > best_score {
@@ -149,6 +115,6 @@ mod tests {
         assert_eq!(1870, problem1(include_str!("puzzle.txt")));
 
         assert_eq!(8, problem2(include_str!("test_puzzle.txt")));
-        assert_eq!(0, problem2(include_str!("puzzle.txt")));
+        assert_eq!(517440, problem2(include_str!("puzzle.txt")));
     }
 }
