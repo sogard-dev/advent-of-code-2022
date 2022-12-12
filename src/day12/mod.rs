@@ -1,10 +1,12 @@
 use std::collections::{HashSet, HashMap, VecDeque};
+type Coordinate = (isize, isize);
 
 pub fn main() {
     println!("Day12");
 }
 
-fn problem1(grid: Grid) -> isize {
+
+fn bfs(grid: &Grid) -> HashMap<Coordinate, isize> {
     let init = grid.end;
 
     let mut to_visit = VecDeque::new();
@@ -37,7 +39,10 @@ fn problem1(grid: Grid) -> isize {
         }
     }
 
+    distances
+}
 
+fn print(grid: &Grid, distances: &HashMap<Coordinate, isize>) {
     println!("Distances:");
     for row_index in 0..grid.height {
         for column_index in 0..grid.width {
@@ -50,74 +55,43 @@ fn problem1(grid: Grid) -> isize {
         println!();
     }
     println!();
+}
 
+fn problem1(grid: Grid) -> isize {
+    let distances = bfs(&grid);
+    // print(&grid, &distances);
     *distances.get(&grid.start).unwrap()
 }
 
 fn problem2(grid: Grid) -> isize {
-    let init = grid.end;
+    let distances = bfs(&grid);
 
-    let mut to_visit = VecDeque::new();
-    let mut added_to_visit = HashSet::new();
-
-    to_visit.push_back(init);
-    added_to_visit.insert(init);
-
-    let mut distances = HashMap::new();
-
-    let mut distance = -1;
-    while !to_visit.is_empty() {
-        distance += 1;
-
-        let mut seen = vec![];
-
-        while let Some(pos_to_check) = to_visit.pop_front() {
-            distances.insert(pos_to_check, distance);
-
-            for neighbour_pos in grid.connections.get(&pos_to_check).unwrap() {
-                seen.push(*neighbour_pos);
-            }
-        }       
-
-        for pos in seen {
-            if !added_to_visit.contains(&pos)   {
-                added_to_visit.insert(pos);
-                to_visit.push_back(pos);
-            }
-        }
-    }
-
-    println!("Distances:");
     let mut smallest = isize::MAX;
 
     for row_index in 0..grid.height {
         for column_index in 0..grid.width {
             let pos = (row_index, column_index);
-            match distances.get(&(row_index, column_index)) {
+            match distances.get(&pos) {
                 Some(d) => {
-                    print!("{:>4} ", d);
                     if *grid.get_height(&pos).unwrap() == 'a' as isize {
                         smallest = smallest.min(*d);
                     }
                 },
-                None => print!("  ?  ")
+                None => {}
             };
         }
-
-        println!();
     }
-    println!();
 
     smallest
 }
 
 struct Grid {
-    connections: HashMap<(isize, isize), HashSet<(isize, isize)>>,
-    nodes: HashMap<(isize, isize), isize>,
+    connections: HashMap<Coordinate, HashSet<Coordinate>>,
+    nodes: HashMap<Coordinate, isize>,
     width: isize,
     height: isize,
-    start: (isize, isize),
-    end: (isize, isize),
+    start: Coordinate,
+    end: Coordinate,
 }
 
 impl Grid {
@@ -129,11 +103,11 @@ impl Grid {
         self.nodes.insert((row, column), height);
     }
 
-    fn get_height(&self, pos: &(isize, isize)) -> Option<&isize> {
+    fn get_height(&self, pos: &Coordinate) -> Option<&isize> {
         self.nodes.get(pos)
     }
 
-    fn add_directional(&mut self, pos_1: (isize, isize), pos_2: (isize, isize)) {
+    fn add_directional(&mut self, pos_1: Coordinate, pos_2: Coordinate) {
         self.connections.entry(pos_1).or_insert_with(|| HashSet::new()).insert(pos_2);
     }
 }

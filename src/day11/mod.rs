@@ -4,18 +4,18 @@ pub fn main() {
 
 type Worry = usize;
 
-fn problem1(mut monkeys: Vec<Monkey>) -> usize {
+fn problem1(monkeys: Vec<Monkey>) -> usize {
     solve(monkeys, 20, 3)
 }
 
-fn problem2(mut monkeys: Vec<Monkey>) -> usize {
+fn problem2(monkeys: Vec<Monkey>) -> usize {
     solve(monkeys, 10000, 1)
 }
 
 fn solve(mut monkeys: Vec<Monkey>, rounds: usize, worry_division: Worry) -> usize {
     let divisible = monkeys.iter().map(|m| m.test_divisible).fold(1, |acum, item| acum * item);
 
-    for round in 1..=rounds {
+    for _ in 1..=rounds {
         //println!("Round {}", round);
 
         for index in 0..monkeys.len() {
@@ -56,16 +56,16 @@ fn solve(mut monkeys: Vec<Monkey>, rounds: usize, worry_division: Worry) -> usiz
             }
         }
 
-        for (index, monkey) in monkeys.iter().enumerate() {
-            //println!("Monkey {}: {:?}", index, monkey.starting_items);
-        }
+        // for (index, monkey) in monkeys.iter().enumerate() {
+        //     println!("Monkey {}: {:?}", index, monkey.starting_items);
+        // }
 
         //println!("");
     }
 
-    monkeys.iter().enumerate().for_each(|(idx, monkey)| {
-        //println!("Monkey {} inspected items {} times.", idx, monkey.inspected);
-    });
+    // monkeys.iter().enumerate().for_each(|(idx, monkey)| {
+    //     println!("Monkey {} inspected items {} times.", idx, monkey.inspected);
+    // });
 
     let mut inspected: Vec<usize> = monkeys.iter().map(|m| m.inspected).collect();
     inspected.sort();
@@ -123,7 +123,7 @@ mod tests {
             let throw_true = capture[6].parse::<usize>().unwrap();
             let throw_false = capture[7].parse::<usize>().unwrap();
 
-            let operand_1 = capture[2].to_string();
+            // let operand_1 = capture[2].to_string();
             let operator_string = &capture[3];
             let operand_2 = capture[4].to_string();
 
