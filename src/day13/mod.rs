@@ -1,3 +1,5 @@
+use std::cmp::Ordering;
+
 pub fn main() {
     println!("Day13");
 }
@@ -62,28 +64,17 @@ fn problem2(pairs: Vec<Pair>) -> usize {
     all_lines.push(decoder_key_1.clone());
     all_lines.push(decoder_key_2.clone());
 
-    let mut changed = true;
-    while changed {
-        changed = false;
+    all_lines.sort_by(|left,right| {
+        let pair = Pair {left: left.clone(), right:right.clone()};
+        let mut pairs = vec![pair];
+        process(&mut pairs);
 
-        for i in 0..all_lines.len() {
-            for j in i..all_lines.len() {
-                if i != j {
-                    let left = all_lines[i].clone();
-                    let right = all_lines[j].clone();
-
-                    let pair = Pair {left: left.clone(), right:right.clone()};
-                    let mut pairs = vec![pair];
-                    process(&mut pairs);
-    
-                    if !compare_pair(&pairs[0]) {
-                        all_lines[i] = right.clone();
-                        all_lines[j] = left.clone();
-                    }
-                }
-            }
+        if compare_pair(&pairs[0]) {
+            Ordering::Less
+        } else {
+            Ordering::Greater
         }
-    }
+    });
 
     // println!("Organized:");
     // for packet in all_lines.iter() {
@@ -138,8 +129,6 @@ fn compare_pair(pair: &Pair) -> bool {
         }
     }
 }
-
-
 
 struct Pair {
     left: Vec<Token>,
