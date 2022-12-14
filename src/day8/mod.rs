@@ -25,20 +25,17 @@ fn problem1(s: &str) -> usize {
     let mut blocked = HashMap::new();
 
     grid.for_every_delta(
-        |me, them| {
-            let my_height = grid.get_model(&me).unwrap();
-            let their_height = grid.get_model(&them).unwrap();
-
-            if my_height <= their_height {
-                let dir = grid::get_direction(&me, &them);
-                blocked.entry(me).or_insert_with(|| HashSet::new()).insert(dir);
+        |me, my_height, them, their_height| {
+              if my_height <= their_height {
+                let dir = grid::get_direction(me, them);
+                blocked.entry(*me).or_insert_with(|| HashSet::new()).insert(dir);
             }
         },
         deltas,
     );
 
     let mut visible_trees = 0;
-    grid.for_every(|pos| {
+    grid.for_every(|pos, _| {
         match blocked.get(&pos) {
             Some(set) => if set.len() != 4 {
                 visible_trees += 1

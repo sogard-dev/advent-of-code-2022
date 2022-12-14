@@ -32,9 +32,42 @@ impl<T> Grid<T> {
         self.connections.entry(pos_1).or_insert_with(|| HashSet::new()).insert(pos_2);
     }
 
-    pub fn get_model(&self, pos: &Coordinate) -> Option<&T> {
-        self.nodes.get(pos)
+    pub fn get_model_offset(&self, pos: &Coordinate, delta: &Coordinate) -> Option<&T> {
+        self.nodes.get(&(pos.0 - delta.0, pos.1 - delta.1))
     }
+
+    pub fn get_model_offset_mut(&mut self, pos: &Coordinate, delta: &Coordinate) -> Option<&mut T> {
+        self.nodes.get_mut(&(pos.0 - delta.0, pos.1 - delta.1))
+    }
+
+    pub fn get_model(&self, pos: &Coordinate) -> Option<&T> {
+        self.get_model_offset(pos, &(0_isize,0_isize))
+    }
+
+    pub fn get_model_mut(&mut self, pos: &Coordinate) -> Option<&mut T> {
+        self.get_model_offset_mut(pos, &(0_isize,0_isize))
+    }
+
+    pub fn swap_if(&mut self, s1: &Coordinate, s2: &Coordinate, swap_if_fn: impl Fn(&T, &T) -> bool) -> bool {
+        match (self.get_model(s1), self.get_model(s2)) {
+            (Some(m1), Some(m2)) => {
+                if swap_if_fn(m1, m2) {
+                    let o1 = self.nodes.remove(s1).unwrap();
+                    let o2 = self.nodes.remove(s2).unwrap();
+
+                    self.nodes.insert(*s1, o2);
+                    self.nodes.insert(*s2, o1);
+                    
+                    true
+                } else {
+                    false
+                }
+            },
+            _ => false
+        }        
+    }
+
+
 
     pub fn bfs(&self, from: &Coordinate, mut f: impl FnMut(Coordinate, isize)) {
         let init = *from;
@@ -78,21 +111,39 @@ impl<T> Grid<T> {
         println!();
     }
 
-    pub fn for_every(&self, mut f: impl FnMut(Coordinate)) {
-        for pos in self.nodes.keys() {
-            f(*pos);
+    pub fn for_every(&self, mut f: impl FnMut(&Coordinate, &T)) {
+        for (pos, obj) in self.nodes.iter() {
+            f(pos, obj);
         }
     }
 
-    pub fn for_every_delta(&self, mut f: impl FnMut(Coordinate, Coordinate), to_visit: Vec<Coordinate>) {
-        self.for_every(|pos| {
+    pub fn sum(&self, mut f: impl FnMut(&Coordinate, &T) -> isize) -> isize {
+        let mut sum = 0;
+        for (pos, obj) in self.nodes.iter() {
+            sum += f(pos, obj);
+        }
+
+        sum
+    }
+
+    pub fn find(&self, f: impl Fn(&Coordinate, &T) -> bool) -> Option<Coordinate> {
+        for (pos, obj) in self.nodes.iter() {
+            if f(pos, obj) {
+                return Some(*pos);
+            }
+        }
+        None
+    }
+
+    pub fn for_every_delta(&self, mut f: impl FnMut(&Coordinate, &T, &Coordinate, &T), to_visit: Vec<Coordinate>) {
+        self.for_every(|pos, m1| {
             for delta in &to_visit {
                 let n_x = ((pos.0 as isize) - delta.0) as isize;
                 let n_y = ((pos.1 as isize) - delta.1) as isize;
                 let neighbour_pos = (n_x, n_y);
 
-                if self.nodes.contains_key(&neighbour_pos) {
-                    f(pos, neighbour_pos);
+                if let Some(m2) = self.nodes.get(&neighbour_pos) {
+                    f(pos, m1, &neighbour_pos, m2);
                 }
             }
         });

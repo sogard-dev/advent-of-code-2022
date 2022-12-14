@@ -39,10 +39,10 @@ fn problem2(arg: (Grid<GridModel>, Coordinate, Coordinate)) -> isize {
     let distances = bfs(&grid, end);
 
     let mut smallest = isize::MAX;
-    grid.for_every(|pos| {
+    grid.for_every(|pos, m| {
         match distances.get(&pos) {
             Some(d) => {
-                if grid.get_model(&pos).unwrap().height == 'a' as isize {
+                if m.height == 'a' as isize {
                     smallest = smallest.min(*d);
                 }
             }
@@ -91,12 +91,9 @@ mod tests {
         let deltas = vec![(-1, 0), (1, 0), (0, -1), (0, 1)];
         let mut connections = vec![];
         grid.for_every_delta(
-            |from, to| {
-                if match (grid.get_model(&from), grid.get_model(&to)) {
-                    (Some(me), Some(them)) => me.height - them.height < 2,
-                    _ => false,
-                } {
-                    connections.push((from, to));
+            |from, m1, to, m2| {
+                if m1.height - m2.height < 2 {
+                    connections.push((*from, *to));
                 }
             },
             deltas,

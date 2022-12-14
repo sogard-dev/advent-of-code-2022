@@ -5,7 +5,7 @@ pub fn main() {
 }
 
 fn process(pairs: &mut Vec<Pair>) {
-    for (pid, pair) in pairs.iter_mut().enumerate() {
+    for (_, pair) in pairs.iter_mut().enumerate() {
         // println!("Repairing {}", pid + 1);
         let mut left_at = 0;
         let mut right_at = 0;
