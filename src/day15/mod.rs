@@ -1,6 +1,7 @@
-use std::collections::HashSet;
-
-use crate::grid::Coordinate;
+use crate::{
+    grid::Coordinate,
+    util::{Interval, Intervals},
+};
 
 type Input = Vec<Line>;
 
@@ -20,66 +21,52 @@ fn manhatten_distance(a: Coordinate, b: Coordinate) -> isize {
     (a.0 - b.0).abs() + (a.1 - b.1).abs()
 }
 
-fn problem1(row: isize, mut input: Input) -> usize {
-    let mut covered_in_row = HashSet::new();
+fn problem1(row: isize, input: Input) -> isize {
+    let mut intervals = Intervals::new();
 
     for line in input.iter() {
         let sensor_pos = (line.sensor_x, line.sensor_y);
         let beacon_pos = (line.beacon_x, line.beacon_y);
-        let distance_to_beacon = manhatten_distance(beacon_pos, sensor_pos);
-        // println!("Sensor: {:?} with beacon {:?} and distance: {}", sensor_pos, beacon_pos, distance_to_beacon);
+        let sensor_to_beacon = manhatten_distance(beacon_pos, sensor_pos);
+        let sensor_to_row = manhatten_distance((sensor_pos.0, row), sensor_pos);
 
-        for diff in -distance_to_beacon..=distance_to_beacon {
-            let to_check = (line.sensor_x + diff, row);
-
-            let dist = manhatten_distance(sensor_pos, to_check);
-            // println!("  Checking: {:?} with distance: {}", to_check, dist);
-
-            if dist <= distance_to_beacon {
-                // println!("    Adding: {:?} with distance: {}", to_check, dist);
-
-                covered_in_row.insert(to_check);
-            }
+        if sensor_to_row < sensor_to_beacon {
+            let diff = sensor_to_beacon - sensor_to_row;
+            intervals.add(Interval::new(sensor_pos.0 - diff, sensor_pos.0 + diff));
         }
+    }
+
+    intervals.vec().iter().fold(0, |acc, interval| acc + (interval.end - interval.start))
+}
+
+fn problem2(max: usize, input: Input) -> isize {
+    let mut intervals = vec![];
+    for _ in 0..=max {
+        let mut this_intervals = Intervals::new();
+        this_intervals.add(Interval::new(0, max as isize));
+        intervals.push(this_intervals);
     }
 
     for line in input.iter() {
-        covered_in_row.remove(&(line.beacon_x, line.beacon_y));
+        let sensor_pos = (line.sensor_x, line.sensor_y);
+        let beacon_pos = (line.beacon_x, line.beacon_y);
+        let sensor_to_beacon = manhatten_distance(beacon_pos, sensor_pos);
+
+        let from = (sensor_pos.1 - sensor_to_beacon).max(0);
+        let to = (sensor_pos.1 + sensor_to_beacon).min(max as isize);
+
+        for y in from..=to {
+            let distance = (sensor_pos.1 - y).abs();
+            let width = sensor_to_beacon - distance;
+            let cover_start = sensor_pos.0 - width;
+            let cover_end = sensor_pos.0 + width;
+
+            intervals[y as usize].remove(Interval::new(cover_start, cover_end));
+        }
     }
-
-    covered_in_row.len()
-}
-
-fn problem2(max: isize, mut input: Input) -> isize {
-    let mut y = 0;
-    let mut x = 0;
-
-    while y <= max {
-        let mut new_x = x;
-        for line in input.iter() {
-            let sensor_dist = manhatten_distance((line.beacon_x, line.beacon_y), (line.sensor_x, line.sensor_y));
-            let sensor_dist_to_this = manhatten_distance((x,y), (line.sensor_x, line.sensor_y));
-
-            if sensor_dist >= sensor_dist_to_this{
-                let diff = (sensor_dist_to_this - sensor_dist).abs();
-                new_x = x + diff + 1;
-                // println!("  Was close to {:?}, Sensor dist: {}, Distance: {}, Difference: {}, Jumping to: {}", (line.sensor_x, line.sensor_y), sensor_dist, sensor_dist_to_this, diff, new_x);
-
-                break;
-            }
-        }
-
-        if new_x == x {
-            return x * 4000000 + y;
-        }
-
-        x = new_x;
-        if x >= max {
-            x = 0;
-            y += 1;
-
-            println!("Checking {:?}", (x,y));
-
+    for y in 0..=max {
+        if let Some(interval) = intervals[y].get_end() {
+            return interval.start * 4000000 + y as isize;
         }
     }
 
@@ -88,9 +75,9 @@ fn problem2(max: isize, mut input: Input) -> isize {
 
 #[cfg(test)]
 mod tests {
+    use crate::util;
 
     use super::*;
-    use regex::Regex;
 
     #[test]
     fn test_problems_1() {
@@ -104,24 +91,10 @@ mod tests {
         assert_eq!(13267474686239, problem2(4000000, parse(include_str!("puzzle.txt"))));
     }
 
-    fn get_numbers(s: &str) -> Vec<isize> {
-        let mut vec = Vec::new();
-        let re = Regex::new(r"([-\d]+)").unwrap();
-        for capture in re.captures_iter(&s) {
-            for i in 1..capture.len() {
-                if let Ok(num) = capture[i].parse::<isize>() {
-                    vec.push(num);
-                }
-            }
-        }
-
-        vec
-    }
-
     fn parse(s: &str) -> Input {
         s.lines()
             .map(|line| {
-                let numbers = get_numbers(line);
+                let numbers = util::parse_numbers(line);
                 Line { sensor_x: numbers[0], sensor_y: numbers[1], beacon_x: numbers[2], beacon_y: numbers[3] }
             })
             .collect()
