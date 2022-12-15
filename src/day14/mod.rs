@@ -3,7 +3,7 @@ use crate::grid::{Grid, Coordinate};
 type Input = Grid<GridModel>;
 
 pub fn main() {
-    println!("Day13");
+    println!("Day14");
 }
 
 fn print_grid(grid: &Grid<GridModel>) {
@@ -110,23 +110,8 @@ mod tests {
 
                 // println!("{:?} -> {:?}", from, to);
 
-                let diff_right = to[0] - from[0];
-                let diff_down = to[1] - from[1];
-
-                let inc_right = if diff_right > 0 {
-                    1
-                } else if diff_right < 0 {
-                    -1
-                } else {
-                    0
-                };
-                let inc_down = if diff_down > 0 {
-                    1
-                } else if diff_down < 0 {
-                    -1
-                } else {
-                    0
-                };
+                let inc_right = (to[0] - from[0]).signum();
+                let inc_down = (to[1] - from[1]).signum();
 
                 let mut rock = from.clone();
                 set_of_rocks.insert(rock.clone());
