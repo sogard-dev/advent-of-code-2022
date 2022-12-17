@@ -10,7 +10,7 @@ fn bfs(grid: &Grid<GridModel>, from: Coordinate) -> HashMap<Coordinate, isize> {
     let mut distances = HashMap::new();
 
     grid.bfs(&from, |pos, distance| {
-        distances.insert(pos, distance);
+        distances.insert(*pos, distance);
     });
 
     print(&grid, &distances);
@@ -19,7 +19,7 @@ fn bfs(grid: &Grid<GridModel>, from: Coordinate) -> HashMap<Coordinate, isize> {
 }
 
 fn print(grid: &Grid<GridModel>, distances: &HashMap<Coordinate, isize>) {
-    grid.print(|pos| {         
+    grid.print(|pos, _| {         
         match distances.get(&pos) {
             Some(d) => format!("{:>4} ", d),
             None => "  ?  ".to_string(),

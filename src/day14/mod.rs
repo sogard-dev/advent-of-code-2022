@@ -7,8 +7,8 @@ pub fn main() {
 }
 
 fn print_grid(grid: &Grid<GridModel>) {
-    grid.print(|pos| {
-        match grid.get_model(&pos).unwrap().t {
+    grid.print(|_, i| {
+        match i.t {
             Type::Air => ".",
             Type::Sand => "O",
             Type::Rock => "#",
