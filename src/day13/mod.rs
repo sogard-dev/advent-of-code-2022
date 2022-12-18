@@ -18,13 +18,13 @@ fn process(pairs: &mut Vec<Pair>) {
                 // println!("inspecting: {:?} and {:?}", left, right);
                 match (left, right) {
                     (Token::Open, Token::Num(_)) => {
-                        pair.right.insert(right_at+1, Token::Close);
+                        pair.right.insert(right_at + 1, Token::Close);
                         pair.right.insert(right_at, Token::Open);
-                    },
+                    }
                     (Token::Num(_), Token::Open) => {
-                        pair.left.insert(left_at+1, Token::Close);
+                        pair.left.insert(left_at + 1, Token::Close);
                         pair.left.insert(left_at, Token::Open);
-                    },
+                    }
                     _ => {}
                 }
             } else {
@@ -44,7 +44,7 @@ fn problem1(mut pairs: Vec<Pair>) -> usize {
     for (index, pair) in pairs.iter_mut().enumerate() {
         // println!("== Pair {} ==", (index + 1));
         if compare_pair(pair) {
-            sum_of_right += index+1;
+            sum_of_right += index + 1;
         }
     }
 
@@ -64,8 +64,8 @@ fn problem2(pairs: Vec<Pair>) -> usize {
     all_lines.push(decoder_key_1.clone());
     all_lines.push(decoder_key_2.clone());
 
-    all_lines.sort_by(|left,right| {
-        let pair = Pair {left: left.clone(), right:right.clone()};
+    all_lines.sort_by(|left, right| {
+        let pair = Pair { left: left.clone(), right: right.clone() };
         let mut pairs = vec![pair];
         process(&mut pairs);
 
@@ -106,20 +106,20 @@ fn compare_pair(pair: &Pair) -> bool {
                 }
                 (Token::Close, Token::Num(_)) => {
                     // println!("    - Left side ran out of items, so inputs are in the right order");
-                    return true;                    
-                },
+                    return true;
+                }
                 (Token::Close, Token::Open) => {
                     // println!("    - Left side ran out of items, so inputs are in the right order");
-                    return true;                    
-                },
+                    return true;
+                }
 
                 (Token::Num(_), Token::Close) => {
                     // println!("    - Right side ran out of items, so inputs are not in the right order");
-                    return false;                    
-                },
+                    return false;
+                }
                 (Token::Open, Token::Close) => {
                     // println!("    - Right side ran out of items, so inputs are not in the right order");
-                    return false;                    
+                    return false;
                 }
                 (Token::Close, Token::Close) => {}
                 (Token::Open, Token::Open) => {}

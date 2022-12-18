@@ -1,4 +1,4 @@
-use crate::grid::{Grid, Coordinate};
+use crate::grid::{Coordinate, Grid};
 
 type Input = Grid<GridModel>;
 
@@ -13,7 +13,8 @@ fn print_grid(grid: &Grid<GridModel>) {
             Type::Sand => "O",
             Type::Rock => "#",
             Type::SandSource => "+",
-        }.to_string()
+        }
+        .to_string()
     })
 }
 
@@ -22,13 +23,11 @@ fn problem1(mut grid: Input) -> isize {
 
     println!("Sand spawner: {:?}", sand_spawner);
 
-    while spawn_and_trickle(&mut grid, &sand_spawner){}
+    while spawn_and_trickle(&mut grid, &sand_spawner) {}
 
-    let sum = grid.sum(|_, m| {
-        match m.t {
-            Type::Sand => 1,
-            _ => 0
-        }
+    let sum = grid.sum(|_, m| match m.t {
+        Type::Sand => 1,
+        _ => 0,
     });
 
     print_grid(&grid);
@@ -43,7 +42,7 @@ fn spawn_and_trickle(grid: &mut Grid<GridModel>, sand_position: &Coordinate) -> 
     loop {
         let under = (current_position.0 + 1, current_position.1);
         let under_left = (current_position.0 + 1, current_position.1 - 1);
-        let under_right = (current_position.0+1, current_position.1 + 1);
+        let under_right = (current_position.0 + 1, current_position.1 + 1);
 
         let mut moved = false;
 
@@ -70,7 +69,10 @@ fn spawn_and_trickle(grid: &mut Grid<GridModel>, sand_position: &Coordinate) -> 
 
 #[derive(Debug, PartialEq, Clone, Eq)]
 enum Type {
-    Air, Sand, Rock, SandSource
+    Air,
+    Sand,
+    Rock,
+    SandSource,
 }
 
 struct GridModel {
@@ -151,10 +153,10 @@ mod tests {
         }
 
         Grid::new(&scan.join("\n"), |_, c| match c {
-            '#' => GridModel {t: Type::Rock},
-            '.' => GridModel {t: Type::Air},
-            '+' => GridModel {t: Type::SandSource},
-            _ => panic!("Unknown type: {}", c)
+            '#' => GridModel { t: Type::Rock },
+            '.' => GridModel { t: Type::Air },
+            '+' => GridModel { t: Type::SandSource },
+            _ => panic!("Unknown type: {}", c),
         })
     }
 
@@ -239,10 +241,10 @@ mod tests {
         }
 
         Grid::new(&scan.join("\n"), |_, c| match c {
-            '#' => GridModel {t: Type::Rock},
-            '.' => GridModel {t: Type::Air},
-            '+' => GridModel {t: Type::SandSource},
-            _ => panic!("Unknown type: {}", c)
+            '#' => GridModel { t: Type::Rock },
+            '.' => GridModel { t: Type::Air },
+            '+' => GridModel { t: Type::SandSource },
+            _ => panic!("Unknown type: {}", c),
         })
     }
 }

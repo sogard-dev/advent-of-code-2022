@@ -80,7 +80,7 @@ struct Monkey {
     test_divisible: Worry,
     throw_true: usize,
     throw_false: usize,
-    inspected: usize
+    inspected: usize,
 }
 
 impl Monkey {
@@ -91,7 +91,7 @@ impl Monkey {
 
 enum Operator {
     Multiply,
-    Plus
+    Plus,
 }
 
 #[cfg(test)]
@@ -100,7 +100,7 @@ mod tests {
     use regex::Regex;
 
     #[test]
-    fn test_problems() {          
+    fn test_problems() {
         assert_eq!(10605, problem1(parse(include_str!("test_puzzle.txt"))));
         assert_eq!(113220, problem1(parse(include_str!("puzzle.txt"))));
 
@@ -112,7 +112,7 @@ mod tests {
         let s = s.replace("\n", "");
         let s = s.replace("\r", "");
         let s = s.replace(" ", "");
-        
+
         let re = Regex::new(r"Monkey\d:Startingitems:([\d,]+)Operation:new=([old\d]+)([+*])([old\d]+)+Test:divisibleby(\d+)Iftrue:throwtomonkey(\d+)Iffalse:throwtomonkey(\d+)").unwrap();
 
         let mut monkeys = vec![];
@@ -137,7 +137,6 @@ mod tests {
                 }
             };
 
-
             let operation = move |old: Worry| {
                 let value_1 = old;
                 let value_2 = {
@@ -153,7 +152,6 @@ mod tests {
                 }
             };
 
-            
             let monkey = Monkey::new(starting_items, operation, test_divisible, throw_true, throw_false);
             monkeys.push(monkey);
         }

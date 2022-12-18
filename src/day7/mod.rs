@@ -3,11 +3,7 @@ pub fn main() {
 }
 
 fn parse(s: &str) -> Directory {
-    let mut root = Directory {
-        name: "".to_string(),
-        files: vec![],
-        directories: vec![],
-    };
+    let mut root = Directory { name: "".to_string(), files: vec![], directories: vec![] };
 
     let mut current_path: Vec<String> = vec!["/".to_string()];
 
@@ -83,22 +79,14 @@ struct Directory {
 }
 impl Directory {
     fn add_subdir(&mut self, name: &str) {
-        let new_directory = Directory {
-            name: name.to_string(),
-            files: vec![],
-            directories: vec![],
-        };
+        let new_directory = Directory { name: name.to_string(), files: vec![], directories: vec![] };
         self.directories.push(new_directory);
     }
 
     fn create(&mut self, name: &str) {
         match self.directories.iter().find(|d| d.name.eq(name)) {
             None => {
-                let dir = Directory {
-                    name: name.to_string(),
-                    files: vec![],
-                    directories: vec![],
-                };
+                let dir = Directory { name: name.to_string(), files: vec![], directories: vec![] };
                 self.directories.push(dir);
             }
             _ => {}
@@ -106,10 +94,7 @@ impl Directory {
     }
 
     fn get(&mut self, name: &str) -> &mut Directory {
-        self.directories
-            .iter_mut()
-            .find(|d| d.name.eq(name))
-            .unwrap()
+        self.directories.iter_mut().find(|d| d.name.eq(name)).unwrap()
     }
 
     fn add_file(&mut self, name: String, size: usize) {
@@ -152,15 +137,10 @@ fn problem2(s: &str) -> usize {
     let mut num = Box::new(disk_space as usize);
     find_smallest_above(&root, space_to_delete, &mut num);
     *num
-
 }
 
 fn find_below(node: &Directory, at_most: usize, sum: &mut Box<usize>) -> usize {
-    let subdir_size: usize = node
-        .directories
-        .iter()
-        .map(|dir| find_below(dir, at_most, sum))
-        .sum();
+    let subdir_size: usize = node.directories.iter().map(|dir| find_below(dir, at_most, sum)).sum();
 
     let files_size: usize = node.files.iter().map(|f| f.size).sum();
 
@@ -170,17 +150,13 @@ fn find_below(node: &Directory, at_most: usize, sum: &mut Box<usize>) -> usize {
         println!("Include dir: {} of size {}", node.name, total_size);
         let v = **sum + total_size;
         **sum = v;
-    } 
+    }
 
     total_size
 }
 
 fn find_smallest_above(node: &Directory, at_most: usize, sum: &mut Box<usize>) -> usize {
-    let subdir_size: usize = node
-        .directories
-        .iter()
-        .map(|dir| find_smallest_above(dir, at_most, sum))
-        .sum();
+    let subdir_size: usize = node.directories.iter().map(|dir| find_smallest_above(dir, at_most, sum)).sum();
 
     let files_size: usize = node.files.iter().map(|f| f.size).sum();
 
@@ -194,7 +170,7 @@ fn find_smallest_above(node: &Directory, at_most: usize, sum: &mut Box<usize>) -
 
             **sum = total_size;
         }
-    } 
+    }
 
     total_size
 }
@@ -202,23 +178,14 @@ fn find_smallest_above(node: &Directory, at_most: usize, sum: &mut Box<usize>) -
 fn print(node: &Directory, indent: usize) -> usize {
     println!("{}- {} (dir)", format!("{:indent$}", ""), node.name);
 
-    let subdir_size: usize = node
-        .directories
-        .iter()
-        .map(|dir| print(dir, indent + 1))
-        .sum();
+    let subdir_size: usize = node.directories.iter().map(|dir| print(dir, indent + 1)).sum();
 
     let indent_file = indent + 1;
     let files_size: usize = node
         .files
         .iter()
         .map(|f| {
-            println!(
-                "{}- {} (file, size={})",
-                format!("{:indent_file$}", ""),
-                f.name,
-                f.size
-            );
+            println!("{}- {} (file, size={})", format!("{:indent_file$}", ""), f.name, f.size);
 
             f.size
         })

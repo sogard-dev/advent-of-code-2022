@@ -12,7 +12,6 @@ pub fn parse_numbers(s: &str) -> Vec<isize> {
     }
 
     vec
-
 }
 
 #[derive(Debug, PartialEq, Clone, Eq)]
@@ -76,7 +75,6 @@ impl Intervals {
     }
 
     pub fn remove(&mut self, new: Interval) {
-
         //println!("Should remove: {:?}", new);
         let mut i = 0;
         while i < self.vec.len() {
@@ -167,7 +165,6 @@ mod tests {
         assert_eq!(None, intervals.get_end());
     }
 
-    
     #[test]
     fn test_intervals_1() {
         let mut intervals = Intervals::new();
@@ -177,6 +174,5 @@ mod tests {
         intervals.remove(Interval::new(3, 13));
         assert_eq!(Some(&Interval::new(0, 1)), intervals.get_start());
         assert_eq!(Some(&Interval::new(14, 20)), intervals.get_end());
-
     }
 }

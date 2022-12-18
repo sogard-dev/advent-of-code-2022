@@ -1,4 +1,4 @@
-use std::{str::FromStr, collections::HashSet};
+use std::{collections::HashSet, str::FromStr};
 
 pub fn main() {
     println!("Day3");
@@ -13,12 +13,11 @@ fn problem2(vec: Vec<Rucksack>) -> usize {
 
     let mut i = 0;
     while i < vec.len() - 2 {
-        let a : Vec<&Item> = vec[i].compartment_a.iter().chain(vec[i].compartment_b.iter()).collect();
-        let b : Vec<&Item> = vec[i+1].compartment_a.iter().chain(vec[i+1].compartment_b.iter()).collect();
-        let c : Vec<&Item> = vec[i+2].compartment_a.iter().chain(vec[i+2].compartment_b.iter()).collect();
+        let a: Vec<&Item> = vec[i].compartment_a.iter().chain(vec[i].compartment_b.iter()).collect();
+        let b: Vec<&Item> = vec[i + 1].compartment_a.iter().chain(vec[i + 1].compartment_b.iter()).collect();
+        let c: Vec<&Item> = vec[i + 2].compartment_a.iter().chain(vec[i + 2].compartment_b.iter()).collect();
 
         let mut seen = HashSet::new();
-
 
         for i1 in &a {
             for i2 in &b {
@@ -47,16 +46,9 @@ struct Item {
 impl From<char> for Item {
     fn from(c: char) -> Self {
         let ascii = c as usize;
-        let priority = if c.is_ascii_lowercase() { 
-            ascii - 97 + 1
-        } else {
-            ascii - 65 + 27
-        };
+        let priority = if c.is_ascii_lowercase() { ascii - 97 + 1 } else { ascii - 65 + 27 };
 
-        Item {
-            item_type: c.to_string(),
-            priority: priority,
-        }
+        Item { item_type: c.to_string(), priority: priority }
     }
 }
 
@@ -97,10 +89,7 @@ impl FromStr for Rucksack {
         let a = &line[0..mid];
         let b = &line[mid..line.len()];
 
-        Ok(Rucksack {
-            compartment_a: a.chars().map(|c| Item::from(c)).collect(),
-            compartment_b: b.chars().map(|c| Item::from(c)).collect(),
-        })
+        Ok(Rucksack { compartment_a: a.chars().map(|c| Item::from(c)).collect(), compartment_b: b.chars().map(|c| Item::from(c)).collect() })
     }
 }
 
@@ -118,8 +107,6 @@ mod tests {
     }
 
     fn parse(str: &str) -> Vec<Rucksack> {
-        str.split("\r\n")
-            .map(|line| Rucksack::from_str(line).unwrap())
-            .collect()
+        str.split("\r\n").map(|line| Rucksack::from_str(line).unwrap()).collect()
     }
 }

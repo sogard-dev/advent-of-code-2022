@@ -160,7 +160,7 @@ fn solve(s: &str, tail_count: usize) -> usize {
     }
 
     let mut structure = Datastructure { head: (0, 0), tails: tails, tail_visited: HashSet::new() };
-    structure.tail_visited.insert((0,0));
+    structure.tail_visited.insert((0, 0));
 
     //print(&structure);
 

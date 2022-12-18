@@ -9,7 +9,6 @@ fn problem1(s: &str) -> String {
 
     let mut stacks = results.stacks;
 
-
     for (amt, from, to) in results.movements {
         for _ in 0..amt {
             let take = stacks[from].pop().unwrap();
@@ -66,11 +65,7 @@ fn parse(s: &str) -> ParseResult {
         if re.is_match(line) {
             let cap = re.captures(line).unwrap();
 
-            movements.push((
-                cap[1].parse().unwrap(),
-                cap[2].parse().unwrap(),
-                cap[3].parse().unwrap(),
-            ));
+            movements.push((cap[1].parse().unwrap(), cap[2].parse().unwrap(), cap[3].parse().unwrap()));
         } else {
             for (column, c) in line.chars().enumerate() {
                 if c.is_ascii_uppercase() {
@@ -89,10 +84,7 @@ fn parse(s: &str) -> ParseResult {
         stack.reverse();
     }
 
-    ParseResult {
-        stacks: stacks,
-        movements: movements,
-    }
+    ParseResult { stacks: stacks, movements: movements }
 }
 
 struct ParseResult {

@@ -1,8 +1,6 @@
-use std::{
-    collections::{HashMap, HashSet},
-};
+use std::collections::{HashMap, HashSet};
 
-use crate::grid::{Coordinate, Grid, self};
+use crate::grid::{self, Coordinate, Grid};
 
 pub fn main() {
     println!("Day8");
@@ -26,7 +24,7 @@ fn problem1(s: &str) -> usize {
 
     grid.for_every_delta(
         |me, my_height, them, their_height| {
-              if my_height <= their_height {
+            if my_height <= their_height {
                 let dir = grid::get_direction(me, them);
                 blocked.entry(*me).or_insert_with(|| HashSet::new()).insert(dir);
             }
@@ -35,13 +33,13 @@ fn problem1(s: &str) -> usize {
     );
 
     let mut visible_trees = 0;
-    grid.for_every(|pos, _| {
-        match blocked.get(&pos) {
-            Some(set) => if set.len() != 4 {
+    grid.for_every(|pos, _| match blocked.get(&pos) {
+        Some(set) => {
+            if set.len() != 4 {
                 visible_trees += 1
-            },
-            None => visible_trees += 1,
-        } 
+            }
+        }
+        None => visible_trees += 1,
     });
 
     visible_trees

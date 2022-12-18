@@ -32,8 +32,6 @@ fn get_start(s: &str, n: usize) -> usize {
     panic!("Did not find!");
 }
 
-
-
 #[cfg(test)]
 mod tests {
     use super::*;

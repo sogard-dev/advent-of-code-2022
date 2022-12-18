@@ -7,25 +7,17 @@ pub fn main() {
 fn problem1(s: &str) -> usize {
     let pairs = parse(s);
 
-    pairs
-        .iter()
-        .map(|p| if p.fully_overlap() { 1 } else { 0 })
-        .sum()
+    pairs.iter().map(|p| if p.fully_overlap() { 1 } else { 0 }).sum()
 }
 
 fn problem2(s: &str) -> usize {
     let pairs = parse(s);
 
-    pairs
-        .iter()
-        .map(|p| if p.partial_overlap() { 1 } else { 0 })
-        .sum()
+    pairs.iter().map(|p| if p.partial_overlap() { 1 } else { 0 }).sum()
 }
 
 fn parse(s: &str) -> Vec<Pair> {
-    s.split("\r\n")
-        .map(|line| Pair::from_str(line).unwrap())
-        .collect()
+    s.split("\r\n").map(|line| Pair::from_str(line).unwrap()).collect()
 }
 
 struct Section {
@@ -39,10 +31,7 @@ impl FromStr for Section {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let spl: Vec<&str> = s.split("-").collect();
 
-        Ok(Section {
-            from: spl[0].parse::<usize>().unwrap(),
-            to: spl[1].parse::<usize>().unwrap(),
-        })
+        Ok(Section { from: spl[0].parse::<usize>().unwrap(), to: spl[1].parse::<usize>().unwrap() })
     }
 }
 
@@ -83,10 +72,7 @@ impl FromStr for Pair {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let spl: Vec<&str> = s.split(",").collect();
 
-        Ok(Pair {
-            a: Section::from_str(spl[0]).unwrap(),
-            b: Section::from_str(spl[1]).unwrap(),
-        })
+        Ok(Pair { a: Section::from_str(spl[0]).unwrap(), b: Section::from_str(spl[1]).unwrap() })
     }
 }
 

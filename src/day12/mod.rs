@@ -19,11 +19,9 @@ fn bfs(grid: &Grid<GridModel>, from: Coordinate) -> HashMap<Coordinate, isize> {
 }
 
 fn print(grid: &Grid<GridModel>, distances: &HashMap<Coordinate, isize>) {
-    grid.print(|pos, _| {         
-        match distances.get(&pos) {
-            Some(d) => format!("{:>4} ", d),
-            None => "  ?  ".to_string(),
-        }
+    grid.print(|pos, _| match distances.get(&pos) {
+        Some(d) => format!("{:>4} ", d),
+        None => "  ?  ".to_string(),
     });
 }
 

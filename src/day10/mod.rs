@@ -96,7 +96,7 @@ fn problem2(s: &str) -> String {
             //Start cycle
 
             //During cycle
-            let display_column = (current_cycle-1) % 40;
+            let display_column = (current_cycle - 1) % 40;
             if (register_x - display_column).abs() <= 1 {
                 display[y][(display_column) as usize] = 1;
             }

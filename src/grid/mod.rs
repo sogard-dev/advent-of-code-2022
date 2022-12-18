@@ -41,7 +41,7 @@ impl<T> Grid<T> {
             for column_index in (0..(width as usize) * 2 - 1).step_by(amt) {
                 let mut str = String::new();
                 str.push(chars[column_index]);
-                str.push(chars[column_index+1]);
+                str.push(chars[column_index + 1]);
                 let my_pos = (row_index as isize, column_index as isize);
                 let new_node = node_parser(my_pos, str);
                 grid.nodes.insert(my_pos, new_node);
@@ -191,14 +191,13 @@ impl<T> Grid<T> {
         return pos.0 == 0 || pos.1 == 0 || pos.0 == self.width - 1 || pos.1 == self.height - 1;
     }
 
-    pub fn add_connections(&mut self, connections: Vec<(Coordinate, Coordinate)>)  {
+    pub fn add_connections(&mut self, connections: Vec<(Coordinate, Coordinate)>) {
         for (from, to) in connections {
             self.add_directional(from, to);
         }
     }
 
     pub fn bfs_path(&self, from: &Coordinate, to: &Coordinate) -> Option<Vec<Coordinate>> {
-
         let init = *from;
         let mut to_visit = VecDeque::new();
         let mut added_to_visit = HashSet::new();
@@ -208,14 +207,9 @@ impl<T> Grid<T> {
 
         let mut came_from = HashMap::new();
 
-        let mut distance = -1;
         while !to_visit.is_empty() {
-            distance += 1;
-
-
             while let Some(pos_to_check) = to_visit.pop_front() {
                 for neighbour_pos in self.connections.get(&pos_to_check).unwrap() {
-
                     if !added_to_visit.contains(&neighbour_pos) {
                         came_from.insert(neighbour_pos, pos_to_check);
                         added_to_visit.insert(*neighbour_pos);

@@ -2,7 +2,6 @@ pub fn main() {
     println!("Day1");
 }
 
-
 fn puzzle_1(input: &str) -> usize {
     let lines = input.lines().collect::<Vec<&str>>();
 
@@ -51,7 +50,7 @@ fn puzzle_2(input: &str) -> usize {
     arr.sort();
     arr.reverse();
 
-    return arr[0] + arr[1] + arr[2]
+    return arr[0] + arr[1] + arr[2];
 }
 
 #[cfg(test)]
