@@ -148,6 +148,11 @@ mod tests {
     use super::*;
 
     #[test]
+    fn test_steliana() {
+        assert_eq!(0, problem1(parse(include_str!("steliana_13.txt"))));
+    }
+
+    #[test]
     fn test_problems() {
         assert_eq!(13, problem1(parse(include_str!("test_puzzle.txt"))));
         assert_eq!(4734, problem1(parse(include_str!("puzzle.txt"))));
