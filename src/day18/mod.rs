@@ -1,9 +1,5 @@
 use std::collections::{HashMap, HashSet};
 
-use crate::{
-    grid::Coordinate,
-    util::{Interval, Intervals},
-};
 
 type Input = Vec<Cube>;
 
