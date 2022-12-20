@@ -1,6 +1,5 @@
 use std::collections::{HashMap, HashSet};
 
-
 type Input = Vec<Cube>;
 
 pub fn main() {

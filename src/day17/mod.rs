@@ -1,4 +1,4 @@
-use std::{collections::HashSet, borrow::BorrowMut};
+use std::{collections::HashSet};
 
 use crate::grid::Coordinate;
 

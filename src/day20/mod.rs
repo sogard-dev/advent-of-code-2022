@@ -19,15 +19,60 @@ fn problem1(rounds: usize, input: Input) -> isize {
     println!("Initial arrangement:");
     print(&work);
 
-    for round in 0..rounds {
+    for _ in 0..rounds {
         for iteration in 0..work.len() {
             let (move_from, value) = work.iter().find_position(|entry| entry.0 == iteration).unwrap();
-            
-            
+            let (_, jump) = *value;
+
+            let sign = jump.signum();
+            if sign != 0 {
+                let mut at = move_from as isize;
+
+                let jumps = jump.abs() as usize;
+                let jumps = jumps % (work.len() - 1);
+
+                for _ in 0..jumps {
+                    let swap_b = at + sign;
+
+
+                    let roll_b: usize = {
+                        if sign == 1 {
+                            if at + 1 == work.len() as isize {
+                                0 as usize
+                            } else {
+                                swap_b as usize
+                            }
+                        } else {
+                            if at == 0 {
+                                work.len() - 1
+                            } else {
+                                swap_b as usize
+                            }
+                        }
+                    };
+
+                    //println!("  Swap {} and {}", at, roll_b);
+
+
+                    work.swap(at as usize, roll_b);
+
+                    let new_at = swap_b;
+                    if new_at == -1 {
+                        at = (work.len() - 1) as isize;
+                    } else if new_at == work.len() as isize {
+                        at = 0;
+                    } else {
+                        at = new_at;
+                    }
+                }
+            }
+
+            //println!("After moving: {}", jump);
+            //print(&work);
         }
 
-        println!("After {} round of mixing:", round + 1);
-        print(&work);
+        //println!("After {} round of mixing:", round + 1);
+        //print(&work);
     }
 
     let (pos, v) = work.iter().find_position(|entry| entry.1 == 0).unwrap();
@@ -39,10 +84,6 @@ fn problem1(rounds: usize, input: Input) -> isize {
 
     println!("Numbers: {} {} {}", a, b, c);
     a + b + c
-}
-
-fn problem2(input: Input) -> usize {
-    0
 }
 
 struct Entry {
@@ -64,8 +105,8 @@ mod tests {
 
     #[test]
     fn test_problems_2() {
-        assert_eq!(0, problem1(1, parse(811589153, include_str!("test_puzzle.txt"))));
-        assert_eq!(0, problem1(1, parse(811589153, include_str!("puzzle.txt"))));
+        assert_eq!(1623178306, problem1(10, parse(811589153, include_str!("test_puzzle.txt"))));
+        assert_eq!(548634267428, problem1(10, parse(811589153, include_str!("puzzle.txt"))));
     }
 
     fn parse(mult: isize, s: &str) -> Input {
