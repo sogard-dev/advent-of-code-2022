@@ -12,6 +12,7 @@ mod day17;
 mod day18;
 mod day19;
 mod day20;
+mod day21;
 mod day2;
 mod day3;
 mod day4;
@@ -44,6 +45,7 @@ fn main() {
     day18::main();
     day19::main();
     day20::main();
+    day21::main();
 
     println!("Hello, world!");
 }
