@@ -1,7 +1,5 @@
 use std::collections::HashMap;
 
-use crate::grid::Coordinate;
-
 type Input = Map;
 
 pub fn main() {
@@ -251,7 +249,7 @@ fn problem2(map: Input) -> usize {
             }
             Instruction::Forward(steps) => {
                 for _ in 0..*steps {
-                    let (d, pos) = get_next_2(&position, &direction, &map, &min_row, &max_row, &min_column, &max_column);
+                    let (d, pos) = get_next_2(&position, &direction, &map);
                     direction = d;
                     position = pos;
                     //print(&min_row, &max_row, &min_column, &max_column, &position, &map);
@@ -273,7 +271,7 @@ fn problem2(map: Input) -> usize {
         }
 }
 
-fn get_next_2(position: &(usize, usize), direction: &Direction, map: &Map, min_row: &usize, max_row: &usize, min_column: &usize, max_column: &usize) -> (Direction, (usize, usize)) {
+fn get_next_2(position: &(usize, usize), direction: &Direction, map: &Map) -> (Direction, (usize, usize)) {
     let next_to_check = match direction {
         Direction::Left => (position.0, position.1 - 1),
         Direction::Right => (position.0, position.1 + 1),
