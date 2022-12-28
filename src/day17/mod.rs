@@ -5,7 +5,7 @@ use crate::grid::Coordinate;
 type Input = Champer;
 
 pub fn main() {
-    println!("18");
+    println!("17");
 }
 
 #[derive(Debug, PartialEq, Clone, Eq)]

@@ -3,7 +3,7 @@ use std::collections::{HashMap, HashSet};
 type Input = Vec<Storm>;
 
 pub fn main() {
-    println!("23");
+    println!("24");
 }
 
 fn print(storms: &Input, round: usize, start: &(usize, usize), end: &(usize, usize)) {

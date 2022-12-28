@@ -55,7 +55,7 @@ fn puzzle_2(input: &str) -> usize {
 
 #[cfg(test)]
 mod tests {
-    use crate::day1::*;
+    use crate::day01::*;
 
     #[test]
     fn it_works() {
