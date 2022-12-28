@@ -1,3 +1,5 @@
+Finished: **25/25**
+
 These are my Rust solutions for Advent Of Code 2022.
 
 I'm by no means a Rust expert and did not spend any time making the solutions prettier between answer and committing in almost all cases. 
